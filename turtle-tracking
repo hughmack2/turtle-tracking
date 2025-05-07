@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>The Turtle Tracker</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(to bottom, #fceabb, #f8b500);
+        overflow-x: auto;
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.8);
+      }
+
+      .header h1 {
+        margin: 0;
+        flex: 1;
+        font-size: 2em;
+      }
+
+      .header button {
+        padding: 10px 20px;
+        font-size: 1em;
+        border: none;
+        background-color: #4caf50;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .tracker {
+        display: grid;
+        grid-template-rows: 1fr 1fr 1fr;
+        position: relative;
+        padding-left: 80px;
+        height: 90vh;
+      }
+
+      .level-label {
+        position: absolute;
+        left: 10px;
+        font-weight: bold;
+        font-size: 1.2em;
+      }
+
+      .level-line {
+        border-bottom: 2px dotted black;
+        position: absolute;
+        left: 80px;
+        right: 0;
+      }
+
+      .level {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 120px;
+        align-items: center;
+        justify-content: start;
+        padding-top: 20px;
+        position: relative;
+      }
+
+      .turtle {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+      }
+
+      .turtle img {
+        width: 60px;
+        transition: transform 0.2s;
+      }
+
+      .turtle img:hover {
+        transform: scale(1.1);
+      }
+
+      .turtle-name {
+        margin-top: 5px;
+        font-size: 0.9em;
+        border: 1px dashed transparent;
+        padding: 2px;
+        min-width: 60px;
+        text-align: center;
+      }
+
+      .turtle-name[contenteditable="true"] {
+        border: 1px dashed gray;
+        background: rgba(255, 255, 255, 0.7);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>The Turtle Tracker</h1>
+      <button id="addTurtleBtn">Add Turtle</button>
+    </div>
+
+    <div class="tracker">
+      <div class="level-label" style="top: 15%">Dunes</div>
+      <div class="level-line" style="top: 33%"></div>
+      <div class="level" id="level1"></div>
+
+      <div class="level-label" style="top: 48%">Shore</div>
+      <div class="level-line" style="top: 66%"></div>
+      <div class="level" id="level2"></div>
+
+      <div class="level-label" style="top: 82%">Sea</div>
+      <div class="level" id="level3"></div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const turtleImage =
+          "https://static.thenounproject.com/png/57750-200.png"; // cartoon turtle icon
+        let turtleCount = 0;
+
+        function createTurtle(name = "Turtle " + (turtleCount + 1)) {
+          const turtleDiv = document.createElement("div");
+          turtleDiv.className = "turtle";
+
+          const img = document.createElement("img");
+          img.src = turtleImage;
+          img.alt = "Turtle";
+
+          const nameDiv = document.createElement("div");
+          nameDiv.className = "turtle-name";
+          nameDiv.textContent = name;
+
+          // Make name editable on click
+          nameDiv.addEventListener("click", () => {
+            nameDiv.contentEditable = true;
+            nameDiv.focus();
+          });
+
+          // Save name on blur or enter key
+          nameDiv.addEventListener("blur", () => {
+            nameDiv.contentEditable = false;
+          });
+          nameDiv.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              nameDiv.blur();
+            }
+          });
+
+          // Click turtle to move down a level
+          img.addEventListener("click", () => {
+            if (turtleDiv.parentElement.id === "level1") {
+              document.getElementById("level2").appendChild(turtleDiv);
+            } else if (turtleDiv.parentElement.id === "level2") {
+              document.getElementById("level3").appendChild(turtleDiv);
+            }
+          });
+
+          turtleDiv.appendChild(img);
+          turtleDiv.appendChild(nameDiv);
+          document.getElementById("level1").appendChild(turtleDiv);
+
+          turtleCount++;
+          console.log(`Added turtle: ${name}`);
+        }
+
+        // Initialize with 10 turtles
+        for (let i = 0; i < 10; i++) {
+          createTurtle();
+        }
+
+        document
+          .getElementById("addTurtleBtn")
+          .addEventListener("click", () => {
+            createTurtle();
+          });
+      });
+    </script>
+  </body>
+</html>
